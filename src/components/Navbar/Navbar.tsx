@@ -15,8 +15,8 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 
@@ -42,7 +42,7 @@ export default function Navbar() {
         <div className="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800 text-xs">
           <span className="font-bold text-white">{user.nombreCompleto}</span>
           <span className="bg-sena-green/20 text-sena-green px-2 py-0.5 rounded font-mono text-[10px]">
-            {user.rol}
+            {user.role}
           </span>
           <button onClick={handleLogout} className="text-rose-400 hover:text-rose-300 font-bold underline">
             Salir

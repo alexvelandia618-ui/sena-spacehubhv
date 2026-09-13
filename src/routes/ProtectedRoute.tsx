@@ -1,37 +1,30 @@
-// 📁 src/routes/ProtectedRoute.tsx — SESIÓN 4
-// El "portero virtual": intercepta el acceso a rutas privadas.
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+// =================================================================
+// Archivo: src/routes/ProtectedRoute.tsx
+// RESPONSABILIDAD: Valida si el usuario está autenticado y si posee el rol requerido (RBAC).
+// =================================================================
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import type { RolUsuario } from '../types/spacehub.types';
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
-  rolPermitido?: RolUsuario;
+  requiredRole?: 'Administrador' | 'Aprendiz' | 'Instructor';
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, rolPermitido }) => {
-  const { user, isAuthenticated } = useAuth();
+export function ProtectedRoute({ requiredRole }: ProtectedRouteProps) {
+  const { isAuthenticated, user } = useAuth();
 
-  // Paso 1: ¿Inició sesión?
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
 
-  // Paso 2: ¿Tiene el rol exigido?
-  if (rolPermitido && user?.rol !== rolPermitido) {
+  if (requiredRole && user?.role !== requiredRole) {
     return (
-      <div className="text-center py-16 space-y-3">
-        <div className="text-4xl">⛔</div>
-        <h2 className="text-xl font-bold text-rose-500">Acceso Denegado por Guardia RBAC</h2>
-        <p className="text-xs text-slate-400 max-w-md mx-auto">
-          Tu rol actual de <strong className="text-rose-400">{user?.rol}</strong> no tiene permisos para esta
-          sección. Se requiere el rol de <strong>{rolPermitido}</strong>.
+      <div className="p-8 text-center bg-rose-950/40 border border-rose-500/50 rounded-2xl m-6 font-mono">
+        <h2 className="text-xl font-bold text-rose-300">HTTP 403 - Acceso Denegado</h2>
+        <p className="text-slate-300 mt-2 text-sm font-sans">
+          Tu rol actual es <strong>{user?.role}</strong>. Requieres permisos de <strong>{requiredRole}</strong>.
         </p>
       </div>
     );
   }
+  return <Outlet />;
+}
 
-  // Paso 3: acceso permitido
-  return <>{children}</>;
-};
+export default ProtectedRoute;

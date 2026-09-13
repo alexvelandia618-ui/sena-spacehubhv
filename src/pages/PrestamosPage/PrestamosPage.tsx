@@ -12,7 +12,7 @@ export interface PrestamosPageProps {
 
 export default function PrestamosPage({ equipos, prestamos, onCrearPrestamo, onDevolver }: PrestamosPageProps) {
   const { user } = useAuth();
-  const esAprendiz = user?.rol === 'Aprendiz';
+  const esAprendiz = user?.role === 'Aprendiz';
   const operativos = equipos.filter((e) => e.estado === 'Operativo');
 
   const [mostrarForm, setMostrarForm] = useState(false);
@@ -20,11 +20,11 @@ export default function PrestamosPage({ equipos, prestamos, onCrearPrestamo, onD
   const [ficha, setFicha] = useState('');
   const [equipoSel, setEquipoSel] = useState(operativos[0]?.placaSena ?? '');
 
-  // Autocompletado de sesión: si es Aprendiz, sus datos se toman del AuthContext
+  // Autocompletado de sesión: si es Aprendiz, su nombre se toma del AuthContext
+  // (el token JWT del backend no incluye número de ficha, así que ese campo queda editable)
   useEffect(() => {
     if (esAprendiz && user) {
       setAprendiz(user.nombreCompleto);
-      setFicha(user.ficha ?? '');
     }
   }, [esAprendiz, user]);
 
