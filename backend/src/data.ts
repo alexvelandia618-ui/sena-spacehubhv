@@ -1,4 +1,4 @@
-import type { Usuario, Equipo } from './types';
+import type { Usuario, Equipo, Prestamo } from './types';
 
 export const USERS: Usuario[] = [
   { id: 999, nombreCompleto: 'Ing. Roberto Gómez', email: 'roberto.gomez@sena.edu.co', password: 'admin123password', role: 'Administrador' },
@@ -17,3 +17,7 @@ export let EQUIPOS: Equipo[] = [
 export function setEquipos(next: Equipo[]) {
   EQUIPOS = next;
 }
+
+export const PRESTAMOS: Prestamo[] = [
+  { id: 1, aprendiz: 'Ana María Fajardo', ficha: '2879451', equipoPlaca: 'SENA-1001', horaInicio: '08:00 AM', estado: 'Activo', creadoPorRol: 'Aprendiz' },
+];
