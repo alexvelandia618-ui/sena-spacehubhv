@@ -1,7 +1,8 @@
-// 📁 src/App.tsx — CLASE 5 (API REST)
-// El inventario de equipos ahora vive en el servidor (Node.js + Express + JWT) y se
-// consume mediante equiposService.ts. Préstamos e Incidencias, al no tener todavía un
-// endpoint propio en la API, siguen operando con datos simulados en memoria.
+// 📁 src/App.tsx — CLASE 6 (Préstamos + Dashboard Analítico)
+// El inventario de equipos y ahora también los Préstamos viven en el servidor
+// (Node.js + Express + JWT) y se consumen mediante equiposService.ts /
+// prestamosService.ts. Incidencias, al no tener todavía un endpoint propio en
+// la API, sigue operando con datos simulados en memoria.
 import { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout/MainLayout';
@@ -14,11 +15,10 @@ import PrestamosPage from './pages/PrestamosPage/PrestamosPage';
 import IncidenciasPage from './pages/IncidenciasPage/IncidenciasPage';
 // 🛡️ Guardia de seguridad: ahora usa <Outlet /> + RBAC por rol
 import ProtectedRoute from './routes/ProtectedRoute';
-import { equiposIniciales, prestamosIniciales, incidenciasIniciales } from './data/mockData';
-import type { PrestamoData, IncidenciaData } from './types/spacehub.types';
+import { incidenciasIniciales } from './data/mockData';
+import type { IncidenciaData } from './types/spacehub.types';
 
 export default function App() {
-  const [prestamos, setPrestamos] = useState<PrestamoData[]>(prestamosIniciales);
   const [incidencias, setIncidencias] = useState<IncidenciaData[]>(incidenciasIniciales);
 
   return (
@@ -30,22 +30,13 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Navigate to="/dashboard" replace />} />
-          <Route path="dashboard" element={<DashboardPage prestamos={prestamos} incidencias={incidencias} />} />
+          <Route path="dashboard" element={<DashboardPage incidencias={incidencias} />} />
 
           {/* Inventario: 100% consumido desde la API REST vía equiposService */}
           <Route path="inventario" element={<EquiposPage />} />
 
-          <Route
-            path="prestamos"
-            element={
-              <PrestamosPage
-                equipos={equiposIniciales}
-                prestamos={prestamos}
-                onCrearPrestamo={(p) => setPrestamos((prev) => [...prev, p])}
-                onDevolver={(id) => setPrestamos((prev) => prev.map((p) => (p.id === id ? { ...p, estado: 'Devuelto' } : p)))}
-              />
-            }
-          />
+          {/* Préstamos: 100% consumido desde la API REST vía prestamosService */}
+          <Route path="prestamos" element={<PrestamosPage />} />
 
           <Route
             path="incidencias"
